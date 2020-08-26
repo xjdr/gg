@@ -1,0 +1,4 @@
+/opt/clion-2020.2/bin/cmake/linux/bin/cmake -DCMAKE_C_COMPILER=/usr/bin/clang-12 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-12 -G "CodeBlocks - Unix Makefiles" /home/xjdr/src/xjdr/gg
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/xjdr/src/xjdr/gg
