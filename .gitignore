@@ -1,0 +1,12 @@
+.cache/
+.idea/
+CMakeCache.txt
+CMakeFiles/  
+cmake_install.cmake  
+compile_commands.json  
+gg.cbp  
+graph  
+graph_test  
+lib/  
+Makefile  
+
