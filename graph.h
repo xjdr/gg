@@ -48,45 +48,23 @@ struct Node {
   const absl::Span<float> memory;
 };
 
-struct Graph {
+class Graph {
+ private:
   std::vector<std::shared_ptr<Edge>> db;
-  absl::flat_hash_map<const uint64_t, std::shared_ptr<Node>> index;
+  absl::flat_hash_map<const absl::string_view, uint64_t> id_index;
+  absl::flat_hash_map<const uint64_t, std::shared_ptr<Node>> mid_index;
 
-  void addEdge(const uint64_t subject,
-               const uint64_t predicate,
-               const uint64_t object,
-               const double weight,
-               const absl::Time timestamp,
-               const absl::flat_hash_map<absl::string_view, absl::string_view> &metadata) {
-    size_t mid = db.size();
-    auto e = std::make_shared<Edge>(mid, subject, predicate, object, weight, timestamp, metadata);
-    db.push_back(e);
+  uint64_t getMid(absl::string_view id);
+  uint64_t addNode(absl::string_view id, absl::string_view type, const std::vector<std::shared_ptr<Edge>>& ev);
 
-    if (index.contains(subject)) {
-      index[subject]->edges.emplace_back(e);
-    } else {
-      std::vector<std::shared_ptr<Edge>> ev{e};
-      absl::Span span = absl::Span<float>(nullptr, 128);
-      auto n = std::make_shared<Node>(subject, "id", "node", ev, span);
-      index[subject] = n;
-    }
+ public:
+  std::shared_ptr<Node> at(absl::string_view id);
+  std::shared_ptr<Node> at(uint64_t mid);
 
-    if (index.contains(predicate)) {
-      index[predicate]->edges.push_back(e);
-    } else {
-      std::vector<std::shared_ptr<Edge>> ev{e};
-      absl::Span span = absl::Span<float>(nullptr, 128);
-      auto n = std::make_shared<Node>(subject, "id", "node", ev, span);
-      index[predicate] = n;
-    }
-
-    if (index.contains(object)) {
-      index[object]->edges.push_back(e);
-    } else {
-      std::vector<std::shared_ptr<Edge>> ev{e};
-      absl::Span span = absl::Span<float>(nullptr, 128);
-      auto n = std::make_shared<Node>(subject, "id", "node", ev, span);
-      index[object] = n;
-    }
-  }
+  void addEdge(absl::string_view subject,
+               absl::string_view predicate,
+               absl::string_view object,
+               double weight,
+               absl::Time timestamp,
+               const absl::flat_hash_map<absl::string_view, absl::string_view> &metadata);
 };
