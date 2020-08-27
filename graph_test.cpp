@@ -3,7 +3,12 @@
 
  TEST(GraphTest, basic) {
    Graph g;
-   g.addEdge(1,2,3,1.0,5);
+  absl::string_view k = "key";
+  absl::string_view v = "val";
+  absl::flat_hash_map<absl::string_view, absl::string_view> metadata;
+  metadata[k] = v;
+
+  g.addEdge(1,2,3,4.0, absl::Now(), metadata);
 
    EXPECT_EQ(1,g.db.at(0)->subject);
    EXPECT_EQ(g.db.at(0)->subject, g.index[1]->edges.at(0)->subject);
