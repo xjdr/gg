@@ -21,7 +21,7 @@ target_link_libraries(graph PRIVATE
         absl::algorithm_container
         absl::memory)
 
-add_executable(graph_test test_main.cpp graph_test.cpp graph.cpp)
+add_executable(graph_test test_main.cpp graph_test.cpp graph_query_test.cpp graph_algo_test.cpp graph.cpp)
 target_link_libraries(graph_test gtest_main
         absl::container_memory
         absl::hash_function_defaults

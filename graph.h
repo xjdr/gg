@@ -1,9 +1,15 @@
-#include <utility>
 #include <vector>
 #include <cstdint>
 #include <memory>
 #include <absl/container/flat_hash_map.h>
+#include <absl/container/flat_hash_set.h>
 #include <absl/strings/string_view.h>
+
+enum Field {
+  SUBJECT,
+  PREDICATE,
+  OBJECT,
+};
 
 struct Edge {
   // Constructor needed until C++2020
@@ -55,11 +61,11 @@ class Graph {
   absl::flat_hash_map<const uint64_t, std::shared_ptr<Node>> mid_index;
 
   uint64_t getMid(absl::string_view id);
-  uint64_t addNode(absl::string_view id, absl::string_view type, const std::vector<std::shared_ptr<Edge>>& ev);
+  uint64_t addNode(absl::string_view id, absl::string_view type, const std::vector<std::shared_ptr<Edge>> &ev);
 
  public:
-  std::shared_ptr<Node> at(absl::string_view id);
-  std::shared_ptr<Node> at(uint64_t mid);
+  absl::optional<std::shared_ptr<Node>> at(absl::string_view id);
+  absl::optional<std::shared_ptr<Node>> at(uint64_t mid);
 
   void addEdge(absl::string_view subject,
                absl::string_view predicate,
@@ -67,4 +73,21 @@ class Graph {
                double weight,
                absl::Time timestamp,
                const absl::flat_hash_map<absl::string_view, absl::string_view> &metadata);
+
+  absl::flat_hash_set<absl::string_view> findObjectByPredicate(absl::string_view subject, absl::string_view predicate);
+
+  absl::flat_hash_set<absl::string_view> findSubjectByPredicate(absl::string_view object, absl::string_view predicate);
+
+  absl::flat_hash_set<absl::string_view> findIntersection(const absl::flat_hash_set<absl::string_view>& set1, const absl::flat_hash_set<absl::string_view>& set2);
+
+  absl::flat_hash_set<absl::string_view> connectedComponents(absl::string_view seed);
+
+  absl::flat_hash_set<absl::string_view> personaCluster(absl::string_view seed);
+
+  absl::flat_hash_set<absl::string_view> CommonNeighbors(absl::string_view nA, absl::string_view nB);
+
+  double JaccardCoefficient(absl::string_view nA, absl::string_view nB);
+
+  double AdamicAdar(absl::string_view nA, absl::string_view nB);
+
 };
