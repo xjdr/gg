@@ -3,7 +3,7 @@
 #include "absl/container/flat_hash_set.h"
 #include <iostream>
 
-class GraphAlgoTest : public ::testing::Test {
+class GraphQueryTest : public ::testing::Test {
  protected:
   void SetUp() override {
     absl::string_view k = "key";
@@ -30,22 +30,38 @@ class GraphAlgoTest : public ::testing::Test {
   Graph g;
 };
 
-TEST_F(GraphAlgoTest, CommonNeighbors) {
-  auto n = g.CommonNeighbors("author1", "author2");
+TEST_F(GraphQueryTest, Author1Wrote) {
+  auto subject = "author1";
+  auto predicate = "/author/wrote/book";
+  absl::flat_hash_set<absl::string_view> books = g.findObjectByPredicate(subject, predicate);
 
-  for(auto& n_ : n) {
-    std::cout << n_ << std::endl;
-  }
+  EXPECT_TRUE(books.contains("book1"));
+  EXPECT_TRUE(books.contains("book3"));
+  EXPECT_FALSE(books.contains("book2"));
 }
 
-TEST_F(GraphAlgoTest, JaccardCoefficient) {
-  double jc = g.JaccardCoefficient("author1", "author2");
+TEST_F(GraphQueryTest, AuthorsBooks1And3) {
+  auto object1 = "book1";
+  auto object2 = "book3";
+  auto predicate = "/author/read/book";
 
-  std::cout << jc << std::endl;
+  auto ob1 = g.findSubjectByPredicate(object1, predicate);
+  auto ob3 = g.findSubjectByPredicate(object2, predicate);
+
+  absl::flat_hash_set<absl::string_view> intersection = g.findIntersection(ob1, ob3);
+
+  EXPECT_TRUE(intersection.contains("author2"));
+  EXPECT_TRUE(intersection.contains("author3"));
+  EXPECT_FALSE(intersection.contains("author1"));
 }
 
-TEST_F(GraphAlgoTest, AdamicAdar) {
-  double aa = g.AdamicAdar("author1", "author2");
+TEST_F(GraphQueryTest, FilterByBook) {
+  //mid 0 == author1
+  absl::flat_hash_set<absl::string_view> books = g.getNodesByType(0, "book");
 
-  std::cout << aa << std::endl;
+  EXPECT_TRUE(books.contains("book1"));
+  EXPECT_TRUE(books.contains("book2"));
+  EXPECT_TRUE(books.contains("book3"));
+
+  EXPECT_FALSE(books.contains("author1"));
 }

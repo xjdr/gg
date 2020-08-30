@@ -3,7 +3,7 @@
 #include "absl/container/flat_hash_set.h"
 #include <iostream>
 
-class GraphQueryTest : public ::testing::Test {
+class GraphAlgoTest : public ::testing::Test {
  protected:
   void SetUp() override {
     absl::string_view k = "key";
@@ -30,27 +30,22 @@ class GraphQueryTest : public ::testing::Test {
   Graph g;
 };
 
-TEST_F(GraphQueryTest, Author1Wrote) {
-  auto subject = "author1";
-  auto predicate = "/author/wrote/book";
-  absl::flat_hash_set<absl::string_view> books = g.findObjectByPredicate(subject, predicate);
+TEST_F(GraphAlgoTest, CommonNeighbors) {
+  auto n = g.CommonNeighbors("author1", "author2");
 
-  EXPECT_TRUE(books.contains("book1"));
-  EXPECT_TRUE(books.contains("book3"));
-  EXPECT_FALSE(books.contains("book2"));
+  EXPECT_TRUE(n.contains("book1"));
+  EXPECT_TRUE(n.contains("book2"));
+  EXPECT_TRUE(n.contains("book3"));
+
+  EXPECT_FALSE(n.contains("author3"));
 }
 
-TEST_F(GraphQueryTest, AuthorsBooks1And3) {
-  auto object1 = "book1";
-  auto object2 = "book3";
-  auto predicate = "/author/read/book";
+TEST_F(GraphAlgoTest, JaccardCoefficient) {
+  double jc = g.JaccardCoefficient("author1", "author2");
+  EXPECT_DOUBLE_EQ(0.75, jc);
+}
 
-  auto ob1 = g.findSubjectByPredicate(object1, predicate);
-  auto ob3 = g.findSubjectByPredicate(object2, predicate);
-
-  absl::flat_hash_set<absl::string_view> intersection = g.findIntersection(ob1, ob3);
-
-  EXPECT_TRUE(intersection.contains("author2"));
-  EXPECT_TRUE(intersection.contains("author3"));
-  EXPECT_FALSE(intersection.contains("author1"));
+TEST_F(GraphAlgoTest, AdamicAdar) {
+  double aa = g.AdamicAdar("author1", "author2");
+  EXPECT_DOUBLE_EQ(  2.2957285153592331, aa);
 }

@@ -9,4 +9,9 @@ graph
 graph_test  
 lib/  
 Makefile  
-
+third_party/*
+CPackConfig.cmake
+CPackSourceConfig.cmake
+CTestTestfile.cmake
+Testing/
+coverage/

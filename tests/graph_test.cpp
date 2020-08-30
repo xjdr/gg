@@ -6,7 +6,6 @@
    void SetUp() override {
      absl::string_view k = "key";
      absl::string_view v = "val";
-     absl::flat_hash_map<absl::string_view, absl::string_view> metadata;
      metadata[k] = v;
 
      g.addEdge("author1", "/author/wrote/book", "book1", 1.0, absl::Now(), metadata);
@@ -15,7 +14,20 @@
    }
 
    Graph g;
-};
+   absl::flat_hash_map<absl::string_view, absl::string_view> metadata;
+ };
+
+TEST_F(GraphTest, BasicInsert) {
+  std::string sub = "subject";
+  const char * pred = &"predicate" ['\0'];
+  absl::string_view obj = "object";
+
+  g.addEdge(sub, pred, obj, 1.0, absl::Now(), metadata);
+
+  EXPECT_EQ("subject", g.at("subject").value()->id);
+  EXPECT_EQ("predicate", g.at("predicate").value()->id);
+  EXPECT_EQ("object", g.at("object").value()->id);
+}
 
 TEST_F(GraphTest, GetByStringId) {
   EXPECT_EQ("author1", g.at("author1").value()->id);
