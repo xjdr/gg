@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <absl/strings/str_split.h>
+#include <memory>
 
 uint64_t Graph::getMid(const absl::string_view id) {
   if (id_index.contains(id)) {
@@ -43,8 +44,9 @@ uint64_t Graph::addNode(const absl::string_view id,
   auto ok = mid_index.emplace(mid, n);
 
   if (ok.second) {
-    //TODO(xjdr): WTF?!?!?!?!?!?
-    //id_index.try_emplace(id, mid);
+    //TODO(xjdr): WTF?!?!?!?!?!?!?!?!?!?!??
+    //id_index.emplace(id, mid);
+
     return mid;
   } else {
     return -1;
@@ -57,6 +59,7 @@ void Graph::addEdge(const absl::string_view subject,
                     const double weight,
                     const absl::Time timestamp,
                     const absl::flat_hash_map<absl::string_view, absl::string_view> &metadata) {
+  // lets see if we can do this without a single edge db
   //size_t mid = db.size();
 
   uint64_t s_mid;
@@ -97,7 +100,9 @@ void Graph::addEdge(const absl::string_view subject,
 
   auto e = std::make_shared<Edge>(s_mid, p_mid, o_mid, weight, timestamp, metadata);
 
+  // lets see if we can do this without a single edge db
   //db.push_back(e);
+
   mid_index[s_mid]->edges.emplace_back(e);
   mid_index[p_mid]->edges.emplace_back(e);
   mid_index[o_mid]->edges.emplace_back(e);

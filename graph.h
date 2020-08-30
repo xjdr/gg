@@ -13,14 +13,14 @@ enum Field {
 
 struct Edge {
   // Constructor needed until C++2020
-  Edge(/*const uint64_t mid,*/
+  Edge(/*const uint64_t mid,*/ // wait to add edge Mid till we need it
       const uint64_t subject,
       const uint64_t predicate,
       const uint64_t object,
       double weight,
       const absl::Time timestamp,
       absl::flat_hash_map<absl::string_view, absl::string_view> metadata)
-      : /*mid(mid),*/
+      : /*mid(mid),*/ // wait to add edge Mid till we need it
       subject(subject),
       predicate(predicate),
       object(object),
@@ -29,7 +29,7 @@ struct Edge {
       metadata(std::move(metadata)) {
 
   }
-  //const uint64_t mid;
+  //const uint64_t mid; // wait to add edge Mid till we need it
   const uint64_t subject;
   const uint64_t predicate;
   const uint64_t object;
@@ -56,6 +56,7 @@ struct Node {
 
 class Graph {
  private:
+  // lets see if we can do this without a single edge db
   //std::vector<std::shared_ptr<Edge>> db;
   absl::flat_hash_map<const absl::string_view, const uint64_t> id_index;
   absl::flat_hash_map<const uint64_t, const std::shared_ptr<Node>> mid_index;

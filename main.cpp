@@ -6,7 +6,7 @@
 #include <jemalloc/jemalloc.h>
 
 
-const static int TEST_SIZE = 30000000;
+const static int TEST_SIZE = 3000000;
 
 int main(int argc, char **argv) {
   FLAGS_logtostderr = true;
@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
     }
   }
 
-  malloc_stats_print(NULL, NULL, NULL);
+  malloc_stats_print(nullptr, nullptr, nullptr);
 
 
   return 0;
